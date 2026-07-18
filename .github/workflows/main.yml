@@ -1,5 +1,5 @@
-name: SR2MDL Release
-on: [push]
+name: io_scene_srally2mdl Release
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -7,14 +7,15 @@ jobs:
     - uses: actions/checkout@master
       with:
         submodules: true
-    - name: Create "SR2MDL ZIP"
+    - name: Create "io_scene_srally2mdl ZIP"
       uses: thedoctor0/zip-release@0.7.5
       with:
         type: 'zip'
-        filename: 'SR2MDL.zip'
-        exclusions: '*.git* .readme.md /SR2MDL/SR2Tools/Documentation* /SR2MDL/SR2Tools/GUIbackend* SR2MDL/SR2Tools/Changelog.txt SR2MDL/SR2Tools/GUI_Run.py SR2MDL/SR2Tools/README.md SR2MDL/SR2Tools/SARCextractor.py SR2MDL/SR2Tools/batchBINDATAconversion.py SR2MDL/SR2Tools/bin_files_tool.py SR2MDL/SR2Tools/bmp_handler.py SR2MDL/SR2Tools/bmp_png_conversion.py SR2MDL/SR2Tools/color_conversion.py SR2MDL/SR2Tools/exe_dll_patcher.py SR2MDL/SR2Tools/texture_classes.py SR2MDL/SR2Tools/texture_tool.py SR2MDL/SR2Tools/unyakuza.py'
+        filename: 'io_scene_srally2mdl.zip'
+        directory: 'src'
+        exclusions: '*.git* *SR2Tools/Documentation* *SR2Tools/GUIbackend* *Changelog.txt *GUI_Run.py *README.md *SARCextractor.py *conversion.py *bin_files_tool.py *bmp_handler.py *bmp_png_conversion.py *color_conversion.py *exe_dll_patcher.py *texture_classes.py *texture_tool.py *unyakuza.py'
     - name: Upload
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
-        name: SR2MDL
-        path: .
+        path: src/io_scene_srally2mdl.zip
+        archive: false
