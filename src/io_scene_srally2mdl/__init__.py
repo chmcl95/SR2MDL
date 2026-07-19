@@ -1,4 +1,5 @@
 import bpy
+import mathutils
 
 from .SR2Tools import sr2mdl
 
@@ -46,7 +47,7 @@ class SaveOperator(bpy.types.Operator):
         save_path = bpy.context.scene.sr2_panel_props.path_to_output
 
         if save_path != "":
-            save(save_path)
+            sr2mdl.save(save_path)
 
         return {'FINISHED'}
 
@@ -61,7 +62,7 @@ class LoadOperator(bpy.types.Operator):
         print("Load path", load_path)
 
         if load_path != "":
-            load(load_path, mathutils.Matrix())
+            sr2mdl.load(load_path, mathutils.Matrix())
 
         return {'FINISHED'}
 
