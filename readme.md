@@ -138,16 +138,25 @@ through a group. 0x08, 0x0C and 0x10 index back into the array itself, and the
 links point both ways in 173,032 of the 173,040 across the four levels. Record
 0 is all zeros and means "no neighbour".
 
+The top bit of a triangle link's flags marks a wall. Every triangle carrying it
+has a stored normal whose Y is 0.0000 - dead vertical - in all four levels, and
+its geometry sits in an address band above every render mesh, referenced by no
+node. That is collision the player never sees. The other 0x0400xxxx values are
+all ground, lying between 0.91 and 1.00 of upright.
+
+The remaining thirteen bits sort the ground by surface. They hold nearly still
+within a mesh (122 of RIVIERA's 122 vertex bases carry one value, 521 of
+DES_SS1's 527) and group the textures: DES_SS1's four values take textures
+0-3, 5-6 and 10, 9 and 11-13, and 14-16 respectively. Which is tarmac and which
+is gravel needs either the textures looked at or a run in game.
+
     Opening Levels
 - Figure out the rest of the Road values. A road has 24 of them and two more
   are now known: where its slice of the node index array starts and how long
-- Figure out the triangle link flags at 0x18. Their top bit splits the records
-  into two pools that share no geometry, and every record in that pool has 0x1C
-  exactly 1.0
+- Name the surfaces the low thirteen bits of a triangle link's flags stand for
 - Figure out 0x1C of a triangle link. It is a float no greater than 1.0, and
-  for RIVIERA it is the absolute Y of the triangle's normal in 4195 of the 5177
-  records that could be checked, to a median of 0.00002. The same test mostly
-  misses on the other three, so where they read their vertices from is not
-  pinned down
+  exactly 1.0 for every wall. For RIVIERA's ground it is the absolute Y of the
+  triangle's normal in 4195 of the 5177 records that could be checked, to a
+  median of 0.00002, but the same test mostly misses on the other three
 - Write a level back out. Export does not know about roads or anything else
   that only a level has
