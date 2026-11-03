@@ -138,25 +138,31 @@ through a group. 0x08, 0x0C and 0x10 index back into the array itself, and the
 links point both ways in 173,032 of the 173,040 across the four levels. Record
 0 is all zeros and means "no neighbour".
 
-The top bit of a triangle link's flags marks a wall. Every triangle carrying it
-has a stored normal whose Y is 0.0000 - dead vertical - in all four levels, and
-its geometry sits in an address band above every render mesh, referenced by no
-node. That is collision the player never sees. The other 0x0400xxxx values are
-all ground, lying between 0.91 and 1.00 of upright.
+The top bit of a triangle link's flags splits the records in two. Every
+triangle carrying it has a stored normal whose Y is 0.0000 - dead vertical - in
+all four levels, carries 0x1C as exactly 1.0, and sits in an address band above
+every render mesh where no node refers to it. The 0x0400xxxx records are the
+other way round: part of the render meshes, and between 0.91 and 1.00 of
+upright.
 
-The remaining thirteen bits sort the ground by surface. They hold nearly still
-within a mesh (122 of RIVIERA's 122 vertex bases carry one value, 521 of
-DES_SS1's 527) and group the textures: DES_SS1's four values take textures
-0-3, 5-6 and 10, 9 and 11-13, and 14-16 respectively. Which is tarmac and which
-is gravel needs either the textures looked at or a run in game.
+The remaining thirteen bits hold nearly still within a mesh (122 of RIVIERA's
+122 vertex bases carry one value, 521 of DES_SS1's 527) and group the textures:
+DES_SS1's four values take textures 0-3, 5-6 and 10, 9 and 11-13, and 14-16.
+
+What the table is for is still open. It is not what the car touches - that
+looks to live in the .CO file beside the level, which holds coordinate triples
+of its own.
 
     Opening Levels
 - Figure out the rest of the Road values. A road has 24 of them and two more
   are now known: where its slice of the node index array starts and how long
-- Name the surfaces the low thirteen bits of a triangle link's flags stand for
+- Work out what the triangle link table is for, and what the low thirteen bits
+  of its flags pick out
 - Figure out 0x1C of a triangle link. It is a float no greater than 1.0, and
-  exactly 1.0 for every wall. For RIVIERA's ground it is the absolute Y of the
-  triangle's normal in 4195 of the 5177 records that could be checked, to a
-  median of 0.00002, but the same test mostly misses on the other three
+  exactly 1.0 for every record whose flags have the top bit. For the rest of
+  RIVIERA it is the absolute Y of the triangle's normal in 4195 of the 5177
+  records that could be checked, to a median of 0.00002, but the same test
+  mostly misses on the other three
+- Read the .CO file, which is where what the car touches appears to be
 - Write a level back out. Export does not know about roads or anything else
   that only a level has
