@@ -57,9 +57,23 @@ Import flips V and export flips it back, which is exact on paper but not in
 single precision: a V of 0.0 returned as -0.0, and the rounding could move the
 last bit besides.
 
-A MDL keeps one UV per vertex while Blender keeps one per corner, so a UV edit
-only reaches the file if every corner sharing that vertex is given the same
-value. Export takes the last corner it sees otherwise.
+A MDL keeps one UV and one normal per vertex while Blender keeps both per
+corner, so export writes a vertex per group of corners that agree rather than
+picking one of them. A vertex is split where its UV does not run on across it
+and where an edge marked sharp runs through it, and the triangles are pointed
+at the copies they belong to. A mesh with neither comes out with the vertices
+it was read with, in the order it was read, so an untouched round trip is
+unchanged.
+
+A vertex no sharp edge meets is never split by topology alone. Two faces that
+meet at a single vertex without sharing an edge are a separate fan by any walk
+over the mesh, and the sample models have such vertices - seven in a Corolla's
+body - which the file stores as one.
+
+An imported mesh carries the custom normals the file held, and those are what
+Blender shades with, so marking an edge sharp splits the vertex but leaves both
+halves the normal they had. Clearing the custom split normals first lets the
+hard edge reach the normals as well.
 
     Byte-identity, not correctness
 - Keep the section order a mesh had in the file. Export always writes
